@@ -8,3 +8,7 @@ Bài 1: Sắp xếp vun đống
 Bài 2: Dãy con tăng dài nhất
 +Mã bài tập : DCTDN
 +Nguồn bài tập : https://vnoi.info/forum/46/4952/
+
+Bài 3: Chiều cao của cây biểu thức
++Mã Bài Tập: HOT
++Nguồn bài tập : http://ntucoder.net/Problem/Details/1168
