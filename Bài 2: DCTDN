@@ -1,0 +1,48 @@
+//Dãy Con Tăng Dài Nhất
+//Code
+//Bài này tạm thời chưa hiểu
+//Code lại từ wikipedia
+//
+//
+//
+//
+#include <iostream>
+#include <cstring>
+using namespace std;
+int main()
+{
+    int L = 0;
+    int n;
+    cin>>n;
+    int *a = new int [n];
+    for (int i = 0; i < n;i++)
+        cin>>a[i];
+    int *P = new int [n];
+    int *M = new int [n+1];
+    for (int i = 0; i < n; i++)
+    {
+        int left = 1;
+        int right = L;
+        while (left <= right)
+        {
+            int middle = (left + right)/2;
+            if ( a[M[middle]] < a[i])
+                left = middle + 1;
+            else
+                right = middle - 1;
+        }
+        int newL = left;
+        P[i] = M[newL - 1];
+        M[newL] = i;
+        if (newL > L) L = newL;
+    }
+    int *S = new int[L];
+    int k = M[L];
+    for (int i = L-1; i >= 0;i--)
+    {
+        S[i] = a[k];
+        k = P[k];
+    }
+    for (int i = 0;i < L;i++)
+        cout<<S[i];
+}
