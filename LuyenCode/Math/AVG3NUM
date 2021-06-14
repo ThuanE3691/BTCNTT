@@ -1,0 +1,12 @@
+// Đề : cho 3 số a,b,x. Tìm số c sao cho TBC của a,b,c bằng x
+// Thuật toán : Ta có (a+b+c)/3 = x => c = 3x-a-b
+//Code
+//
+//
+#include <iostream>
+using namespace std;
+int main(){
+    int a,b,x;
+    cin >> a >> b >> x;
+    cout << 3*x - a - b;
+}
