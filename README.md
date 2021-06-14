@@ -1,2 +1,2 @@
 # BTCNTT
-lưa code bài tập ở các trang web Wecode, luyencode.net, NTUCoder,...
+Lưa code bài tập Luyencode.net
