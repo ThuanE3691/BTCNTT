@@ -1,5 +1,5 @@
 # BTCNTT
-lưa code bài tập
+lưa code bài tập ở web NTUCoder và VNOI
 
 Bài 1: Sắp xếp vun đống
 +Mã bài tập : SXHEAP
