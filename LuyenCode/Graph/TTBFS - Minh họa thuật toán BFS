@@ -1,0 +1,58 @@
+// Đề : https://luyencode.net/problem/TTBFS
+// Thuật toán : Duyệt mọi đỉnh từ 1 đến n bằng BFS . Trước đó sắp xếp lại các đỉnh kề v của u theo thứ tự từ bé đến lớn
+// Code:
+//
+//
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <algorithm>
+#include <map>
+using namespace std;
+class Graph {
+private:
+	map <int, vector <int> > G;
+public:
+	void Process() {
+		int V, e, u, j;
+		cin >> V >> e;
+		for (int i = 0; i < e; i++) {
+			cin >> u >> j;
+			G[u].push_back(j);
+			G[j].push_back(u);
+		}
+		vector <int> Path;
+		vector <bool> mark(V + 1, 0);
+		for (u = 1; u <= V; u++)
+			sort(G[u].begin(), G[u].end()); // Sort các đỉnh v kề u 
+		for (u = 1; u <= V; u++) {
+			if (!mark[u]) BFS(u, mark, Path); // Nếu đỉnh u trong quá trình BFS của đỉnh trước đó chưa được duyệt
+		}
+		for (auto x : Path) { // In ra thứ tự duyệt
+			cout << x << endl;
+		}
+	}
+	void BFS(int n, vector <bool>& mark, vector <int>& Path) { // Thuật toán BFS
+		queue <int> Q;
+		mark[n] = 1;
+		Q.push(n);
+		Path.push_back(n);
+		while (!Q.empty()) {
+			int u = Q.front();
+			Q.pop();
+			
+			for (auto v : G[u]) {
+				if (mark[v] == false) {
+					mark[v] = true;
+					Q.push(v);
+					Path.push_back(v);
+				}
+			}
+		}
+	}
+};
+
+int main() {
+	Graph G;
+	G.Process();
+}
