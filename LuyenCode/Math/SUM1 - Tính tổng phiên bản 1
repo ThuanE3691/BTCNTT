@@ -1,0 +1,13 @@
+// Đề : https://luyencode.net/problem/SUM1
+// Tính tổng từ 1->n ta có công thức cấp số cộng là : S = n*(n+1)/ 2
+// Code
+//
+//
+#include <iostream>
+#include <vector>
+using namespace std;
+int main() {
+	int n;
+	cin >> n;
+	cout << (n * (n + 1)) / 2;
+}
