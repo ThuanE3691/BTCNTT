@@ -1,0 +1,17 @@
+// Đề : https://luyencode.net/problem/SUM2
+// Cách giải : Ta có công thức tính tổng bình phường từ 1->n: (n(n+1)(2n+1))/6
+// Chứng minh: https://tailieure.com/bai-toan-chung-minh-122232-n2-n-n1-2n1-6.html
+// Code:
+//
+#include <iostream>
+#include <iomanip>
+using namespace std;
+
+int main() {
+	double  n,kq;
+	cin >> n;
+	kq = n + 1;
+	kq *= 2 * n + 1;
+	kq *= (n * 1.0) / 6;
+	cout << setprecision(0) << fixed << kq;
+}
