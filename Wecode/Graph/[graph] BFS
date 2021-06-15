@@ -15,9 +15,6 @@ private:
 	vector < vector <int> > G;
 	map < string, int > list;
 	vector <string> key;
-	std::list <string> Open;
-	vector < bool > Close;
-	map < string, string> parent;
 public:
 	void initGraph() {
 		int v, e;
@@ -35,59 +32,49 @@ public:
 			}
 		while (e--) {
 			cin >> u >> j;
-			Close.assign(v, false);
-			parent.clear();
-			if (dfs(u, j,v)) {
-				int count = 0;
-				int length = findPath(u, j);
-				for (int i = 0; i < v; i++)
-					if (Close[i] == true) count++;
-				cout << count << " " << length << endl;
-			}
-			else {
-				int count = 0;
-				cout << "-unreachable-" << endl;
-				for (int i = 0; i < v; i++)
-					if (Close[i] == true) count++;
-				cout << count << " " << 0 << endl;
-			}
-			Open.clear();
+			bfs(u, j, v);
 		}
 	}
-	bool dfs(string s, string t,int V) {
-		Open.push_back(s);
+	void bfs(string s, string t, int V) {
+		int count = 1;
+		queue <string> Open;
+		vector < bool > Close(V,false);
+		map < string, string> parent;
+		Open.push(s);
 		Close[list[s]] = true;
 		while (!Open.empty()) {
 			string u = Open.front();
-			Open.pop_front();
+			int index = list[u];
+			Open.pop();
 			for (int v = 0; v < V; v++) {
-				if (G[list[u]][v] > 0 && Close[v] == false) {
+				if (G[index][v] > 0 && Close[v] == false) {
+					string sIndex = key[v];
+					Open.push(sIndex);
+					parent[sIndex] = u;
 					Close[v] = true;
-					Open.push_back(key[v]);
-					parent[key[v]] = u;
-					if (key[v] == t) return true;
+					count++;
+					if (sIndex == t) {
+						int length = 0;
+						std::list < string > Path;
+						while (t != s) {
+							Path.push_front(t);
+							string u = parent[t];
+							length += G[list[u]][list[t]];
+							t = u;
+						}
+						Path.push_front(s);
+						for (auto x : Path) {
+							cout << x << " ";
+						}
+						cout << endl;
+						cout << count << " " << length << endl;
+						return;
+					}
 				}
 			}
 		}
-		return false;
-	}
-	int findPath(string s, string t) {
-		int length = 0;
-		std::list < string > Path;
-		while (t != s) {
-			Path.push_back(t);
-			string u = parent[t];
-			length += G[list[u]][list[t]];
-			t = parent[t];
-		}
-		Path.push_back(s);
-		while (!Path.empty()) {
-			cout << Path.back() << " ";
-			Path.pop_back();
-		}
-		cout << endl;
-		return length;
-
+		cout << "-unreachable-" << endl;
+		cout << count << " " << 0 << endl;
 	}
 
 };
