@@ -1,0 +1,94 @@
+// Đề: https://colab.research.google.com/drive/1e1NZFE903jyd08JHuJBPGVZ2RFCVBTc6?usp=sharing
+// Code:
+//
+struct Node {
+    int key;
+    Node* Next;
+    Node* prev;
+};
+
+struct Bucket {
+    Node* Head;
+    Node* Tail;
+};
+
+struct Hash {
+    int m;
+    Bucket* bucket;
+};
+
+void initHash(Hash& H) {
+    H.bucket = new Bucket[H.m + 1];
+    for (int i = 0; i < H.m; i++) {
+        H.bucket[i].Head = H.bucket[i].Tail = NULL;
+    }
+}
+
+Node* getNode(int x) {
+    Node* temp = new Node;
+    if (temp) {
+        temp->key = x;
+        temp->Next = temp->prev = NULL;
+    }
+    return temp;
+}
+
+void addHead(Bucket& bucket, Node* p) {
+    bucket.Head->prev = p;
+    p->Next = bucket.Head;
+    bucket.Head = p;
+}
+void addTail(Bucket& bucket, Node* p) {
+    bucket.Tail->Next = p;
+    p->prev = bucket.Tail;
+    bucket.Tail = p;
+}
+
+void addNode(Bucket &bucket, int x) {
+    Node* p = getNode(x);
+    if (bucket.Head == NULL) {
+        bucket.Head = bucket.Tail = p;
+    }
+    else {
+        if (x < bucket.Head->key) {
+            addHead(bucket, p);
+            return;
+        }
+        Node* q = bucket.Head;
+        if (q->Next == NULL) {
+            addTail(bucket, p); return;
+        }
+        while (q->Next->key < x) {
+            q = q->Next;
+            if (q->Next == NULL) {
+                addTail(bucket, p);
+                return;
+            }
+        }
+        q->Next->prev = p;
+        p->Next = q->Next;
+        q->Next = p;
+        p->prev = q;
+    }
+}
+
+void insertHash(Hash& H, int x) {
+    int index = x % H.m;
+    addNode(H.bucket[index], x);
+}
+
+void travereOneBucket(Bucket bucket) {
+    Node* p = bucket.Head;
+    while (p) {
+        cout << p->key << " ";
+        p = p->Next;
+    }
+}
+
+void traverseAllHash(Hash H) {
+    for (int i = 0; i < H.m; i++) {
+        cout << "Bucket " << i <<": ";
+        travereOneBucket(H.bucket[i]);
+        cout << endl;
+    }
+}
