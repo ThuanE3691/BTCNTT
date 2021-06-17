@@ -1,0 +1,203 @@
+// Đề: https://colab.research.google.com/drive/1W3tKBKgs3z8NzlLhs65cd-U9eb2nCKYv?usp=sharing
+// Code:
+/*###Begin banned keyword - each of the following line if appear in code will raise error. regex supported
+define
+include
+using
+###End banned keyword*/
+
+#include <iostream>
+#include <cstring>
+#include <string>
+#define MAX 1000
+using namespace std;
+
+//###INSERT CODE HERE -
+
+struct Node {
+    int key;
+    Node* Next;
+    Node* prev;
+};
+
+struct Bucket {
+    Node* Head;
+    Node* Tail;
+};
+
+struct Hash {
+    int m;
+    Bucket* bucket;
+};
+
+void initHash(Hash& H) {
+    H.bucket = new Bucket[H.m + 1];
+    for (int i = 0; i < H.m; i++) {
+        H.bucket[i].Head = H.bucket[i].Tail = NULL;
+    }
+}
+
+Node* getNode(int x) {
+    Node* temp = new Node;
+    if (temp) {
+        temp->key = x;
+        temp->Next = temp->prev = NULL;
+    }
+    return temp;
+}
+
+Node* Search(Bucket& bucket,int x) {
+    Node* p = bucket.Head;
+    while (p) {
+        if (p->key == x) return p;
+        if (p->key > x) return NULL; 
+        p = p->Next;
+    }
+    return NULL;
+}
+
+void DelHead(Bucket& bucket) {
+    if (bucket.Head == bucket.Tail) {
+        bucket.Head = bucket.Tail = NULL;
+    }
+    else {
+        Node* p = bucket.Head;
+        bucket.Head = bucket.Head->Next;
+        bucket.Head->prev = NULL;
+        p->Next = NULL; delete p;
+    }
+}
+
+void DelTail(Bucket& bucket) {
+    if (bucket.Head == bucket.Tail) {
+        bucket.Head = bucket.Tail = NULL;
+    }
+    else {
+        Node* p = bucket.Tail;
+        bucket.Tail = bucket.Tail->prev;
+        bucket.Tail->Next = NULL;
+        p->prev = NULL; delete p;
+    }
+}
+
+void DelOne(Bucket& bucket, Node* p) {
+    if (bucket.Head) {
+        if (p == bucket.Head) DelHead(bucket);
+        else if (p == bucket.Tail) DelTail(bucket);
+        else {
+            Node* temp = p->prev;
+            temp->Next = p->Next;
+            p->Next->prev = temp;
+            p->Next = p->prev = NULL;
+            delete p;
+        }
+    }
+}
+
+void addHead(Bucket& bucket, Node* p) {
+    bucket.Head->prev = p;
+    p->Next = bucket.Head;
+    bucket.Head = p;
+}
+void addTail(Bucket& bucket, Node* p) {
+    bucket.Tail->Next = p;
+    p->prev = bucket.Tail;
+    bucket.Tail = p;
+}
+
+void addNode(Bucket &bucket, int x) {
+    Node* p = getNode(x);
+    if (bucket.Head == NULL) {
+        bucket.Head = bucket.Tail = p;
+    }
+    else {
+        if (x < bucket.Head->key) {
+            addHead(bucket, p);
+            return;
+        }
+        Node* q = bucket.Head;
+        if (q->Next == NULL) {
+            addTail(bucket, p); return;
+        }
+        while (q->Next->key < x) {
+            q = q->Next;
+            if (q->Next == NULL) {
+                addTail(bucket, p);
+                return;
+            }
+        }
+        q->Next->prev = p;
+        p->Next = q->Next;
+        q->Next = p;
+        p->prev = q;
+    }
+}
+
+void insertHash(Hash& H, int x) {
+    int index = x % H.m;
+    addNode(H.bucket[index], x);
+}
+
+void travereOneBucket(Bucket bucket) {
+    Node* p = bucket.Head;
+    while (p) {
+        cout << p->key << " ";
+        p = p->Next;
+    }
+}
+
+void DeleteNode(Hash& H,int x) {
+    Node* p = Search(H.bucket[x%H.m], x);
+    if (p == NULL) {
+        cout << "\nKhong co phan tu co khoa " << x;
+        return;
+    }
+    else {
+        DelOne(H.bucket[x%H.m], p);
+    }
+}
+
+void traverseAllHash(Hash H) {
+    for (int i = 0; i < H.m; i++) {
+        cout << "Bucket " << i <<": ";
+        travereOneBucket(H.bucket[i]);
+        cout << endl;
+    }
+}
+
+int main()
+{
+    Hash H;
+    cin >> H.m; // m la so dia chi co trong bang bam
+    initHash(H); //khoi tao cac bucket
+
+    int n, x; cin >> n; // n la so luong gia tri can phai luu tru
+    for (int i = 1; i <= n; i++)
+    {
+        cin >> x;
+        insertHash(H, x); // them 1 gia tri du lieu vao bang bam
+    }
+    cout << "Created Hash:" << endl;
+    traverseAllHash(H); // Xuat toan bo cac bucket cua Bang bam
+    cout << endl;
+    int choice,b;
+    cin >> choice;
+    while (choice <= 2) {
+        switch (choice) {
+        case 1:
+            cin >> b;
+            cout << "\nInsert " << b;
+            insertHash(H, b);
+            break;
+        case 2:
+            cin >> b;
+            cout << "\nDelete " << b;
+            DeleteNode(H, b);
+            break;
+        }
+        cin >> choice;
+    }
+    cout << "\nUpdated Hash:" << endl;
+    traverseAllHash(H);
+    return 0;
+}
